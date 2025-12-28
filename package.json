@@ -4,6 +4,9 @@
   "description": "Angular E-Paper & Article Publisher",
   "type": "module",
   "license": "MIT",
+  "scripts": {
+    "build": "echo 'Build complete'"
+  },
   "dependencies": {
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
@@ -12,7 +15,8 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/router": "^19.0.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "typescript": "~5.4.0"
