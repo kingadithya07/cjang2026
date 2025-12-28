@@ -5,7 +5,8 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "echo 'Build complete'"
+    "build": "vite build",
+    "dev": "vite"
   },
   "dependencies": {
     "@angular/common": "^19.0.0",
@@ -19,6 +20,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "typescript": "~5.4.0"
+    "typescript": "~5.4.0",
+    "vite": "^5.0.0"
   }
 }
