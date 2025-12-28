@@ -80,15 +80,58 @@ export class SupabaseService {
       return { user: null, error: { message: 'Invalid credentials' } };
     }
 
-    const user: User = {
-      id: 'user-' + Math.floor(Math.random() * 10000),
-      email,
-      role: email.includes('admin') ? 'admin' : 'editor'
-    };
+    // 1. Check if user exists in our "mock database" (localStorage)
+    const storedUsers = JSON.parse(localStorage.getItem('mock_db_users') || '[]');
+    const existingUser = storedUsers.find((u: User) => u.email === email);
+
+    let user: User;
+
+    if (existingUser) {
+      user = existingUser;
+    } else {
+      // 2. Fallback for demo: Generate based on email content if not explicitly registered
+      user = {
+        id: 'user-' + Math.floor(Math.random() * 10000),
+        email,
+        role: email.includes('admin') ? 'admin' : (email.includes('editor') ? 'editor' : 'reader')
+      };
+    }
 
     this._user.set(user);
     localStorage.setItem('mock_supabase_user', JSON.stringify(user));
     return { user, error: null };
+  }
+
+  async signUp(email: string, password: string, role: 'admin' | 'editor' | 'reader'): Promise<{ user: User | null, error: PostgrestError | null }> {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Simple check if already exists
+    const storedUsers = JSON.parse(localStorage.getItem('mock_db_users') || '[]');
+    if (storedUsers.find((u: User) => u.email === email)) {
+        return { user: null, error: { message: 'User already exists' } };
+    }
+
+    const newUser: User = {
+        id: 'user-' + Math.floor(Math.random() * 100000),
+        email,
+        role
+    };
+
+    // Save to mock DB
+    storedUsers.push(newUser);
+    localStorage.setItem('mock_db_users', JSON.stringify(storedUsers));
+
+    // Auto login
+    this._user.set(newUser);
+    localStorage.setItem('mock_supabase_user', JSON.stringify(newUser));
+
+    return { user: newUser, error: null };
+  }
+
+  async resetPasswordForEmail(email: string): Promise<{ error: PostgrestError | null }> {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Always succeed for mock
+      return { error: null };
   }
 
   async signOut(): Promise<void> {
@@ -219,6 +262,7 @@ export class SupabaseService {
   }
 
   private seedArticles() {
+    const now = new Date();
     return [
         { 
           id: '1', 
@@ -228,26 +272,78 @@ export class SupabaseService {
           excerpt: 'Artificial Intelligence is reshaping how we consume news. From automated journalism to personalized feeds, the landscape is changing rapidly.',
           author_id: '101', 
           status: 'published', 
-          created_at: new Date().toISOString(), 
+          created_at: new Date(now.getTime() - 86400000 * 1).toISOString(), 
           category: 'Technology', 
-          image_url: 'https://picsum.photos/800/400',
+          image_url: 'https://picsum.photos/800/400?random=1',
           tags: ['AI', 'Tech', 'Future'],
           meta_description: 'Discover how AI is transforming the publishing industry.'
         },
         { 
           id: '2', 
-          title: 'Global Markets Rally', 
+          title: 'Global Markets Rally Unexpectedly', 
           slug: 'global-markets-rally',
           content: '<p>Stocks hit record highs today as investors...</p>',
-          excerpt: 'Stocks hit record highs today as investors react to new economic data.',
+          excerpt: 'Stocks hit record highs today as investors react to new economic data, signaling a potential end to the recent volatility.',
           author_id: '102', 
-          status: 'draft', 
-          created_at: new Date().toISOString(), 
+          status: 'published', 
+          created_at: new Date(now.getTime() - 86400000 * 0.5).toISOString(), 
           category: 'Finance', 
-          image_url: 'https://picsum.photos/800/401',
+          image_url: 'https://picsum.photos/800/400?random=2',
           tags: ['Stocks', 'Economy'],
           meta_description: 'Daily market update and financial analysis.'
         },
+        {
+          id: '3',
+          title: 'The Renaissance of Modern Architecture',
+          slug: 'modern-architecture-europe',
+          content: '<p>New sustainable materials are driving a revolution in European building design...</p>',
+          excerpt: 'New sustainable materials are driving a revolution in European building design, merging eco-friendliness with striking aesthetics.',
+          author_id: '103',
+          status: 'published',
+          created_at: new Date(now.getTime() - 86400000 * 2).toISOString(),
+          category: 'Culture',
+          image_url: 'https://picsum.photos/800/400?random=3',
+          tags: ['Design', 'Architecture', 'Europe']
+        },
+        {
+          id: '4',
+          title: 'Championship Finals Set for Sunday',
+          slug: 'championship-finals-sunday',
+          content: '<p>The stage is set for the biggest game of the year...</p>',
+          excerpt: 'The stage is set for the biggest game of the year as rivals prepare to clash in the grand stadium this coming weekend.',
+          author_id: '104',
+          status: 'published',
+          created_at: new Date(now.getTime() - 86400000 * 0.2).toISOString(),
+          category: 'Sports',
+          image_url: 'https://picsum.photos/800/400?random=4',
+          tags: ['Sports', 'Football', 'Finals']
+        },
+        {
+          id: '5',
+          title: 'New Health Regulations Approved',
+          slug: 'health-regulations-approved',
+          content: '<p>Parliament has passed the controversial bill...</p>',
+          excerpt: 'Parliament has passed the controversial bill regarding public health standards, aiming to improve longevity and care quality.',
+          author_id: '105',
+          status: 'published',
+          created_at: new Date(now.getTime() - 86400000 * 3).toISOString(),
+          category: 'Health',
+          image_url: 'https://picsum.photos/800/400?random=5',
+          tags: ['Health', 'Policy', 'Law']
+        },
+        {
+          id: '6',
+          title: 'Draft: Top 10 Gadgets of 2025',
+          slug: 'top-gadgets-2025',
+          content: '<p>Coming soon...</p>',
+          excerpt: 'A preview of the hottest tech coming this year.',
+          author_id: '101',
+          status: 'draft',
+          created_at: now.toISOString(),
+          category: 'Technology',
+          image_url: 'https://picsum.photos/800/400?random=6',
+          tags: ['Gadgets', 'Review']
+        }
       ];
   }
 }
