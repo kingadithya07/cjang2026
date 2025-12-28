@@ -3,11 +3,14 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   build: {
     outDir: 'dist',
-    target: 'es2022',
-    assetsDir: 'assets',
-    sourcemap: true,
+    target: 'esnext',
+    modulePreload: false,
+    minify: false,
     commonjsOptions: {
       transformMixedEsModules: true,
+    },
+    rollupOptions: {
+      external: [],
     }
   },
   resolve: {
@@ -15,8 +18,18 @@ export default defineConfig({
       src: '/src',
     },
   },
+  optimizeDeps: {
+    include: [
+      '@angular/common',
+      '@angular/compiler',
+      '@angular/core',
+      '@angular/forms',
+      '@angular/platform-browser',
+      '@angular/router',
+      'rxjs'
+    ]
+  },
   esbuild: {
-    // Critical for Angular decorators to work in JIT mode with Vite
     target: 'es2022',
     keepNames: true,
     supported: {

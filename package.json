@@ -5,8 +5,9 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "dev": "vite",
     "build": "vite build",
-    "dev": "vite"
+    "start": "vite preview --host --port 4173"
   },
   "dependencies": {
     "@angular/common": "^19.0.0",
