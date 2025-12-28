@@ -5,7 +5,10 @@ export default defineConfig({
     outDir: 'dist',
     target: 'es2022',
     assetsDir: 'assets',
-    sourcemap: true
+    sourcemap: true,
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    }
   },
   resolve: {
     alias: {
@@ -13,12 +16,14 @@ export default defineConfig({
     },
   },
   esbuild: {
-    // Angular uses decorators, ensure esbuild handles them
+    // Critical for Angular decorators to work in JIT mode with Vite
     target: 'es2022',
-    keepNames: true
+    keepNames: true,
+    supported: {
+      'top-level-await': true
+    }
   },
   define: {
-    // Define process.env for libs that might expect it
     'process.env': {}
   }
 });
