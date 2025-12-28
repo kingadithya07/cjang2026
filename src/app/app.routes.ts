@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
@@ -46,13 +45,13 @@ export const routes: Routes = [
     path: 'admin/articles/new',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'editor'] },
-    loadComponent: () => import('./features/articles/article-editor.component').then(m => m.ArticleEditorComponent)
+    loadComponent: () => import('./features/admin/articles/article-editor.component').then(m => m.ArticleEditorComponent)
   },
   {
     path: 'admin/articles/:id',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'editor'] },
-    loadComponent: () => import('./features/articles/article-editor.component').then(m => m.ArticleEditorComponent)
+    loadComponent: () => import('./features/admin/articles/article-editor.component').then(m => m.ArticleEditorComponent)
   },
   // E-Paper (Admin Only)
   {

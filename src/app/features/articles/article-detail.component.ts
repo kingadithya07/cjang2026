@@ -1,14 +1,14 @@
-
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ArticleService } from './services/article.service';
+import { ArticleService } from '../../core/services/article.service';
 import { Article } from '../../core/services/supabase-mock.service';
 
 @Component({
   selector: 'app-article-detail',
   standalone: true,
   imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="bg-white min-h-screen pb-12">
       @if (article()) {

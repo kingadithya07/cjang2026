@@ -1,9 +1,8 @@
-
-import { Component, inject, signal, ViewChild, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, ViewChild, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EpaperService } from './services/epaper.service';
-import { ArticleService } from '../articles/services/article.service';
+import { ArticleService } from '../../core/services/article.service';
 import { EPaperPage, EPaperClip, Article } from '../../core/services/supabase-mock.service';
 import { ImageCropperComponent } from './image-cropper.component';
 
@@ -11,6 +10,7 @@ import { ImageCropperComponent } from './image-cropper.component';
   selector: 'app-epaper-dashboard',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ImageCropperComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="h-[calc(100vh-64px)] flex flex-col md:flex-row overflow-hidden bg-gray-100">
       
